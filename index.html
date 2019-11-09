@@ -79,51 +79,143 @@
 	<div class="field">
 		<h1><img src="images/title.png" alt=""></h1>
 		<div class="container">
+			<!--    <input type="button" value="カウント開始" id="startcount" onclick="startShowing();">
+
+			<p id="countdownArea">(ここにカウントダウンを表示する）</p> -->
+
 			<div class="relative">
 				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
+				<img class="mogura uwagaki" src="">
 			</div>
 			<div class="relative">
 				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
+				<img class="mogura uwagaki" src="">
 			</div>
 			<div class="relative">
 				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
-			</div>
-		</div>
-		<div class="container">
-			<div class="relative">
-				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
-			</div>
-			<div class="relative">
-				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
-			</div>
-			<div class="relative">
-				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
+				<img class="mogura uwagaki" src="">
 			</div>
 		</div>
 		<div class="container">
 			<div class="relative">
 				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
+				<img class="mogura uwagaki" src="">
 			</div>
 			<div class="relative">
 				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
+				<img class="mogura uwagaki" src="">
 			</div>
 			<div class="relative">
 				<img class="ana" src="images/穴.png">
-				<img class="mogura uwagaki" src="images/モグ2.png">
+				<img class="mogura uwagaki" src="">
+			</div>
+		</div>
+		<div class="container">
+			<div class="relative">
+				<img class="ana" src="images/穴.png">
+				<img class="mogura uwagaki" src="">
+			</div>
+			<div class="relative">
+				<img class="ana" src="images/穴.png">
+				<img class="mogura uwagaki" src="">
+			</div>
+			<div class="relative">
+				<img class="ana" src="images/穴.png">
+				<img class="mogura uwagaki" src="">
 			</div>
 		</div>
 	</div>
 
 	<script>
-		// ここにJavaScriptを書く
+
+		let hitCounter = 0;  //叩かれた回数を入れる変数
+
+		//mograsに全てのモグラのデータが入っている
+		let moguras = document.querySelectorAll(".mogura");
+		//全てのモグラにHITMOGURAファンクションをつける。
+		for (let index = 0; index < moguras.length; index++) {
+			const element = moguras[index];
+			element.onclick = hitMogura;
+			//ここはなぜ（）がついていないのか！！ここの説明にはｵﾌﾞｼﾞｪｸﾄの知識が必要。（）がある→関数の実行。（）がない→その関数をさし示している。
+		}
+
+		function allMoguraModoru(timeUp) {
+			console.log("オールモグラ戻る");
+			for (let ind = 0; ind < moguras.length; ind++) {
+				console.log("test１:for文に入った");
+				const element = moguras[ind];
+				element.src = "";
+				console.log("test２:for文に入った");
+				// const element = moguras[index];
+			};
+			timeUp();
+		}
+
+		///どうやってすべてのモグラを選択しているのか、理解ができていない。querySelectorAllのやっていることを理解したい。
+		//全てのモグラを引っ込める処理を　allMoguraModoruファンクションで実装した。しかし、消える前にAlertが出て、そのあとに消える処理がされる。なんで？？？ フレームの処理を遅らせると良いかもしれない。
+		
+
+//課題2 　ゲーム時間が過ぎたらゲームを終了してモグラが出ないようにする
+		let time = 4; // ここでゲームの残り時間を設定する
+		let timerId = setInterval(countDown, 1000);
+
+		function countDown() { //
+			time = time - 1;
+			console.log(time);
+			if (time < 0) {
+				clearInterval(deruMoguraId); //モグラが出ないようにする
+				clearInterval(timerId);	//カウントダウン収量
+				allMoguraModoru(timeUp);	//全モグラが引込む
+				// timeUp();	//終了のメッセージ
+			};
+		};
+
+		
+
+		let deruMoguraId = setInterval(deruMogura, 500); //500m秒ごとにderuMogu関数が実行される。 
+		function deruMogura() {		//　モグラが出る
+			var random = Math.floor(Math.random() * 9);
+			moguras[random].src = "images/モグ2.png";
+			setTimeout(kakureruMogura, 10000, moguras[random]);
+		}
+
+
+		//もぐらが隠れる。
+		function kakureruMogura(mogura) {
+			mogura.src = "";
+		}
+
+		//モグラが叩かれる
+		function hitMogura() {
+			var mogura = event.target;			//どの要素がイベントを読んだのかが分かる。
+			//console.log('たたいたよ');
+			mogura.src = "images/モグ1.png";
+			hitCounter++;
+			console.log("ヒットカウンター：" + hitCounter + "回");
+
+			//課題1 モグラを叩いたら痛い顔をしてしばらくして引っ込む
+			//モグラの画像を戻す処理
+			//setTimeout(実行したい処理、何m秒後に実行するか)
+			setTimeout(kakureruMogura, 200, mogura)
+		}
+
+//課題4 ゲーム終了時に叩いた数をユーザに知らせる。
+		function timeUp() {
+			alert("終了！たたいた回数は" + hitCounter + "回です！");
+		};
+
+
+
+
+	// 	//　モグラが戻る
+	// 	function modoruMogura(mogura){
+	// 	 mogura.src = "images/モグ2.png";
+	//  }
+
+
+
+	// Custom cursors with size greater than 32x32 DIP intersecting native UI is deprecated and will be removed in M75, around June 2019. See https://www.chromestatus.com/features/5825971391299584 for more details.
+
 	</script>
 </body>
 
